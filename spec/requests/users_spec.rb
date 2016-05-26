@@ -6,9 +6,7 @@ describe 'Users', type: :request do
     let(:req) { get '/users.json', nil, headers }
     let(:subject) { req; json }
     let :headers do
-      {
-        'Authorization' => "Token token=#{user.auth_token}"
-      }
+      { 'Authorization' => "Token token=#{user.auth_token}" }
     end
 
     it 'fails without token' do
