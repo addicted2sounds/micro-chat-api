@@ -1,4 +1,9 @@
 class UsersController < ApplicationController
+
+  def index
+    render json: User.all, each_serializer: UserListSerializer
+  end
+
   def create
     @user = User.new user_params
     if @user.save
