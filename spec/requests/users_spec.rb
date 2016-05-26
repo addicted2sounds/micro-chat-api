@@ -11,6 +11,11 @@ describe 'Users', type: :request do
       }
     end
 
+    it 'fails without token' do
+      get '/users.json'
+      expect(response.status).to eq 401
+    end
+
     context 'when no users exist' do
       it { req; expect(json.count).to eq 1 }
     end
