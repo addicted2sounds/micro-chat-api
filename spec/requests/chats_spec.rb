@@ -100,4 +100,70 @@ RSpec.describe 'Chats', type: :request do
       end
     end
   end
+
+  describe 'PATCH /chats/:id.json' do
+    let(:chat) { create :chat }
+    let(:valid_attributes) { attributes_for(:chat) }
+    let(:invalid_attributes) { attributes_for(:chat, title: '') }
+    context 'when changing anticipated chat' do
+      let(:req) do
+        patch "/chats/#{chat.id}.json", { chat: valid_attributes }, headers
+      end
+      before :each do
+        chat.users << user
+      end
+
+      context 'with valid attributes' do
+        it 'return valid status' do
+          req
+          expect(response.status).to eq 200
+        end
+
+        it 'returns new attributes' do
+          req
+          expect(json['title']).to eq valid_attributes[:title]
+        end
+
+        describe 'changing anticipated users' do
+          it 'remove user from chat_users' do
+            valid_attributes[:user_ids] = chat.users.map(&:id)
+            valid_attributes[:user_ids].pop
+            expect {
+              patch "/chats/#{chat.id}.json", { chat: valid_attributes }, headers
+            }.to change(ChatUser, :count).by -1
+          end
+
+          it 'add new user to chat_users' do
+            valid_attributes[:user_ids] = chat.users.map(&:id)
+            valid_attributes[:user_ids].push(create(:user).id)
+            expect {
+              patch "/chats/#{chat.id}.json", { chat: valid_attributes }, headers
+            }.to change(ChatUser, :count).by 1
+          end
+        end
+      end
+
+      context 'with invalid attributes' do
+        let(:req) do
+          patch "/chats/#{chat.id}.json", { chat: invalid_attributes }, headers
+        end
+
+        it 'returns unprocessable status' do
+          req
+          expect(response.status).to eq 422
+        end
+      end
+    end
+
+    context 'when changing not anticipated chat' do
+      let(:req) do
+        patch "/chats/#{chat.id}.json", { chat: valid_attributes }, headers
+      end
+
+      it 'returns unprocessable status' do
+        req
+        expect(response.status).to eq 401
+      end
+    end
+  end
 end
