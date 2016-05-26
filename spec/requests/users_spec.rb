@@ -15,6 +15,12 @@ describe 'Users', type: :request do
       it 'creates new user' do
         expect { subject }.to change { User.count }.by 1
       end
+
+      it 'returns required elements' do
+        subject
+        expect(json.keys).to eq %w(id name messages_count
+                                    auth_token created_at)
+      end
     end
 
     context 'when not valid params' do
