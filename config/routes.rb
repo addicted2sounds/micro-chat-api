@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     resources :chats, only: [:index, :create, :update] do
       resources :messages, only: [:index, :create]
       resources :unread_messages, only: [:index] do
-        delete '', action: 'destroy', on: :collection
+        delete '', action: 'destroy'
       end
     end
   end
