@@ -13,6 +13,7 @@ end
 group :development, :test do
   gem 'rspec-rails', '~> 3.4'
   gem 'faker'
+  gem 'terminal-notifier-guard', '~> 1.6.1'
 end
 
 group :test do
