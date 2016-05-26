@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe 'Sessions', type: :request do
   describe 'POST /sessions' do
     let(:user) { create :user, password: '123qwe' }
-    let(:valid_attributes) { { name: user.name, password: '123qwe' } }
-    let(:invalid_credentials) { { name: 'None', password: '111' } }
+    let(:valid_attributes) { { user: { name: user.name, password: '123qwe' } } }
+    let(:invalid_credentials) { { user: { name: 'None', password: '111' } } }
     context 'when valid credentials' do
       let(:request) { post '/sessions.json', valid_attributes }
       it 'return normal state' do
@@ -20,9 +20,9 @@ RSpec.describe 'Sessions', type: :request do
 
     context 'when invalid credentials' do
       let(:request) { post '/sessions.json', invalid_credentials }
-      it 'returns unprocessable entity status' do
+      it 'returns unauthorized status' do
         request
-        expect(response.status).to eq 422
+        expect(response.status).to eq 401
       end
 
       it 'has error description' do

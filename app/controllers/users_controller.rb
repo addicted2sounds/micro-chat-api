@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  before_action :authenticate!, except: [:create]
 
   def index
     render json: User.all, each_serializer: UserListSerializer

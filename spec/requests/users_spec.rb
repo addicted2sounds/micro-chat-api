@@ -2,18 +2,24 @@ require 'rails_helper'
 
 describe 'Users', type: :request do
   describe 'GET /users.json' do
-    let(:request) { get '/users.json' }
-    let(:subject) { request; json }
+    let!(:user) { create :user }
+    let(:req) { get '/users.json', nil, headers }
+    let(:subject) { req; json }
+    let :headers do
+      {
+        'Authorization' => "Token token=#{user.auth_token}"
+      }
+    end
 
     context 'when no users exist' do
-      it { is_expected.to be_empty }
+      it { req; expect(json.count).to eq 1 }
     end
 
     context 'when users exist' do
-      let!(:user) { create :user }
       it 'return users list' do
-        request
-        expect(json.count).to eq 1
+        create :user
+        req
+        expect(json.count).to eq 2
       end
     end
   end
