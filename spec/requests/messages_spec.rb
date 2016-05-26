@@ -14,6 +14,7 @@ RSpec.describe 'Messages', type: :request do
       get "/chats/#{chat.id}/messages.json", valid_attributes, headers
     end
 
+    let!(:chat_user) { create :chat_user, chat: chat, user: user }
     it 'fails without token' do
       get "/chats/#{chat.id}/messages.json", valid_attributes
       expect(response.status).to eq 401
@@ -37,7 +38,20 @@ RSpec.describe 'Messages', type: :request do
   end
 
   describe 'POST /messages.json' do
+    context 'when posting to alias chat' do
+      let(:chat) { create :chat }
+      let(:req) do
+        post "/chats/#{chat.id}/messages.json", { message: valid_attributes },
+             headers
+      end
+
+      it 'raise exception' do
+        req
+        expect(response.status).to eq 401
+      end
+    end
     context 'when valid params' do
+      let!(:chat_user) { create :chat_user, chat: chat, user: user }
       let(:req) do
         post "/chats/#{chat.id}/messages.json", { message: valid_attributes },
              headers
@@ -55,6 +69,7 @@ RSpec.describe 'Messages', type: :request do
     end
 
     context 'when invalid params' do
+      let!(:chat_user) { create :chat_user, chat: chat, user: user }
       let(:req) do
         post "/chats/#{chat.id}/messages.json",
              { message: invalid_attributes }, headers

@@ -1,6 +1,13 @@
+require 'exceptions'
 class ApplicationController < ActionController::API
   include ActionController::HttpAuthentication::Token::ControllerMethods
   attr_reader :current_user
+
+  rescue_from NotAuthorizedError, with: :not_authorized
+
+  def not_authorized
+    render json: { error: 'Not authorized' }, status: :unauthorized
+  end
 
   protected
 

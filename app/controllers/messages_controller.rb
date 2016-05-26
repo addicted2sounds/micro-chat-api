@@ -1,6 +1,7 @@
 class MessagesController < ApplicationController
   before_action :authenticate!
   before_action :set_chat
+  before_action :authorize_chat!
 
   def index
     @messages = Message.where(chat: @chat)
@@ -22,6 +23,10 @@ class MessagesController < ApplicationController
 
   def message_params
     params.require(:message).permit(:body)
+  end
+
+  def authorize_chat!
+    raise NotAuthorizedError unless @chat.users.exists? id: current_user.id
   end
 
   def set_chat
