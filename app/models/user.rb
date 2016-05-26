@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  has_secure_password
+
   validates :name, presence: true, uniqueness: true
   validates :messages_count, numericality: {
       greater_than_or_equal_to: 0,

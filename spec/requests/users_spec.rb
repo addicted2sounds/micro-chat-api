@@ -19,7 +19,8 @@ describe 'Users', type: :request do
   end
 
   describe 'POST /users.json' do
-    let(:valid_params) { { name: Faker::Name.name } }
+    let(:valid_params) { attributes_for :user }
+
     let(:invalid_params) { { name: '' } }
     context 'when valid params' do
       subject { post '/users.json', user: valid_params }
