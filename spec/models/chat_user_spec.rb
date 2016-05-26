@@ -4,6 +4,7 @@ RSpec.describe ChatUser, type: :model do
   describe 'relations' do
     it { is_expected.to belong_to :user }
     it { is_expected.to belong_to :chat }
+    it { is_expected.to belong_to(:last_read_message).class_name('Message') }
   end
 
   describe 'validations' do
