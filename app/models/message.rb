@@ -9,6 +9,15 @@ class Message < ActiveRecord::Base
   after_create :update_unread_messages
   after_create :update_user_messages_count
 
+  def chat_user
+    @chat_user ||= chat.chat_users.find_by user: user
+  end
+
+  def set_last_read!(user)
+    chat_user = chat.chat_users.where(user: user).first
+    chat_user.update_attribute :last_read_message_id, id if chat_user
+  end
+
   private
 
   def update_unread_messages

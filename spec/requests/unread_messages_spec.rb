@@ -3,13 +3,24 @@ require 'rails_helper'
 RSpec.describe 'Unread messages', type: :request do
   let(:user) { create :user }
   let(:chat) { create :chat }
-  let(:message) { create :message, user: user, chat: chat }
+  let!(:message) { create :message, chat: chat }
   let(:headers) do
     { 'Authorization' => "Token token=#{user.auth_token}" }
   end
+  describe 'GET /chats/:chat_id/unread_messages' do
+    let(:req) do
+      get "/chats/#{chat.id}/unread_messages", {}, headers
+    end
+
+    it 'fails without token' do
+      get "/chats/#{chat.id}/unread_messages.json"
+      expect(response.status).to eq 401
+    end
+  end
+
   describe 'DELETE /chats/:chat_id/unread_messages/:message_id' do
     let(:req) do
-      delete "/chats/#{chat.id}/unread_messages/#{message.id}", {}, headers
+      delete "/chats/#{message.chat.id}/unread_messages/#{message.id}", {}, headers
     end
 
     it 'fails without token' do
@@ -18,17 +29,19 @@ RSpec.describe 'Unread messages', type: :request do
     end
 
     context 'when alias chat' do
-      it 'renders not authorized error' do
+      it 'returns not authorized status' do
         req
-        expect(json).to include 'error'
+        expect(response.status).to eq 401
       end
     end
 
     context 'when participate in chat' do
       let!(:chat_user) { create :chat_user, user: user, chat: chat }
 
-      it 'invoke chat_user mark_read method' do
-
+      it 'sets last read message for chat user' do
+        req
+        chat_user.reload
+        expect(chat_user.last_read_message_id).to eq message.id
       end
     end
   end

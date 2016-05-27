@@ -1,17 +1,23 @@
 class UnreadMessagesController < ApplicationController
   before_action :authenticate!
   before_action :set_chat
-  before_action :authorize_chat!
+  before_action :set_message
+  before_action :authorize_chat!#, only: [:index]
 
   def index
 
   end
 
   def destroy
-
+    @message.set_last_read!(current_user)
+    render nothing: true, status: :ok
   end
 
   private
+
+  def set_message
+    @message = @chat.messages.find params[:id]
+  end
 
   def set_chat
     @chat = Chat.find params[:chat_id]

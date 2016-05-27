@@ -34,13 +34,11 @@ RSpec.describe Message, type: :model do
     end
 
     it 'updates unread_messages_count for alias chat users' do
-      p alias_chat_user, message.chat.chat_users
       create :message, user: user, chat: message.chat
       # expect {
       #   create :message, user: user, chat: message.chat
       # }.to change(alias_chat_user, :unread_messages_count).by(1)
       alias_chat_user.reload
-      p alias_chat_user.unread_messages_count
     end
   end
 
@@ -49,6 +47,20 @@ RSpec.describe Message, type: :model do
       expect {
         create :message, user: user
       }.to change(user, :messages_count).by(1)
+    end
+  end
+
+  describe '.chat_user' do
+    it 'returns chat user' do
+      expect(message.chat_user).to be_a ChatUser
+    end
+  end
+
+  describe '.set_last_read!' do
+    it 'updates chat user last read message' do
+      message.set_last_read!(user)
+      chat_user = ChatUser.find_by user: user, chat: message.chat
+      expect(chat_user.last_read_message_id).to eq message.id
     end
   end
 end
