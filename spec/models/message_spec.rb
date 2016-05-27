@@ -15,7 +15,7 @@ RSpec.describe Message, type: :model do
     it { is_expected.to validate_presence_of :chat }
   end
 
-  describe '.update_unread_messages' do
+  describe '.update_unread_messages!' do
     let(:chat_user) { message.chat.chat_users.find_by user: user }
     let(:alias_chat_user) do
       message.chat.chat_users.where.not(user: user).first
@@ -28,15 +28,14 @@ RSpec.describe Message, type: :model do
     end
 
     it 'updates unread_messages_count for alias chat users' do
-      create :message, user: user, chat: message.chat
-      # expect {
-      #   create :message, user: user, chat: message.chat
-      # }.to change(alias_chat_user, :unread_messages_count).by(1)
-      alias_chat_user.reload
+      expect {
+        create :message, user: user, chat: message.chat
+        alias_chat_user.reload
+      }.to change(alias_chat_user, :unread_messages_count).by(1)
     end
   end
 
-  describe '.update_user_messages_count' do
+  describe '.update_user_messages_count!' do
     it 'increments counter' do
       expect {
         create :message, user: user
