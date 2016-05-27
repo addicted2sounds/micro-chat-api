@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160526172930) do
+ActiveRecord::Schema.define(version: 20160526213409) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,9 +22,11 @@ ActiveRecord::Schema.define(version: 20160526172930) do
     t.integer  "unread_messages_count", default: 0
     t.datetime "created_at",                        null: false
     t.datetime "updated_at",                        null: false
+    t.integer  "last_read_message_id"
   end
 
   add_index "chat_users", ["chat_id"], name: "index_chat_users_on_chat_id", using: :btree
+  add_index "chat_users", ["last_read_message_id"], name: "index_chat_users_on_last_read_message_id", using: :btree
   add_index "chat_users", ["user_id"], name: "index_chat_users_on_user_id", using: :btree
 
   create_table "chats", force: :cascade do |t|
@@ -56,6 +58,7 @@ ActiveRecord::Schema.define(version: 20160526172930) do
   add_index "users", ["auth_token"], name: "index_users_on_auth_token", using: :btree
 
   add_foreign_key "chat_users", "chats"
+  add_foreign_key "chat_users", "messages", column: "last_read_message_id"
   add_foreign_key "chat_users", "users"
   add_foreign_key "messages", "chats"
   add_foreign_key "messages", "users"

@@ -4,6 +4,9 @@ Rails.application.routes.draw do
     resources :users, only: [:index, :create]
     resources :chats, only: [:index, :create, :update] do
       resources :messages, only: [:index, :create]
+      resources :unread_messages, only: [:index] do
+        delete '', action: 'destroy', on: :member
+      end
     end
   end
 end
