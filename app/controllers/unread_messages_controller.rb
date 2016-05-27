@@ -1,11 +1,11 @@
 class UnreadMessagesController < ApplicationController
   before_action :authenticate!
   before_action :set_chat
-  before_action :set_message
-  before_action :authorize_chat!#, only: [:index]
+  before_action :set_message, except: [:index]
+  before_action :authorize_chat!
 
   def index
-
+    render json: @chat.unread_messages(current_user)
   end
 
   def destroy

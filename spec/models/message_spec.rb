@@ -15,12 +15,6 @@ RSpec.describe Message, type: :model do
     it { is_expected.to validate_presence_of :chat }
   end
 
-  describe '.chat_users' do
-    it 'returns list of chat_users' do
-      p message.chat.chat_users
-    end
-  end
-
   describe '.update_unread_messages' do
     let(:chat_user) { message.chat.chat_users.find_by user: user }
     let(:alias_chat_user) do
