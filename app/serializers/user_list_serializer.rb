@@ -1,3 +1,3 @@
 class UserListSerializer < ActiveModel::Serializer
-  attributes :id, :name, :created_at
+  attributes :id, :name, :messages_count, :created_at
 end

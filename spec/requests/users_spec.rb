@@ -22,6 +22,7 @@ describe 'Users', type: :request do
       it 'return users list' do
         create :user
         req
+        p json
         expect(json.count).to eq 2
       end
     end
