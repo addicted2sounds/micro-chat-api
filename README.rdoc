@@ -14,6 +14,10 @@ curl -X POST -d "user[name]=Petrov&user[password]=123qwe" http://micro-chat-api.
 
 curl -X POST -d "user[name]=Ivanov&user[password]=123qwe" http://micro-chat-api.herokuapp.com/sessions.json
 
+# Get users list
+
+curl -X GET -H "Authorization: Token token=7b9ce33f-164f-4500-a46e-6c80907a7383" http://micro-chat-api.herokuapp.com/users.json
+
 # View chats
 
 curl -X GET -H "Authorization: Token token=7b9ce33f-164f-4500-a46e-6c80907a7383" http://micro-chat-api.herokuapp.com/chats.json
